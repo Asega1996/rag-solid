@@ -1,14 +1,16 @@
-from langchain_ollama import OllamaEmbeddings, ChatOllama
-from langchain_chroma import Chroma
+from dotenv import load_dotenv
+load_dotenv()
+
+from vectorstore_factory import get_vectorstore
+from llm_factory import get_chat_llm
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-embeddings = OllamaEmbeddings(model="nomic-embed-text")
-vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
+vectorstore = get_vectorstore()
 retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
 
-llm = ChatOllama(model="llama3.1:8b", temperature=0.1)
+llm = get_chat_llm()
 
 prompt = ChatPromptTemplate.from_template("""You are an expert assistant in SOLID principles and software best practices.
 Use ONLY the following context to answer. Do not use any prior knowledge.
@@ -37,13 +39,11 @@ if __name__ == "__main__":
         if question.lower() == "exit":
             break
 
-        # Show retrieved sources
         retrieved_docs = retriever.invoke(question)
         print("\n--- Retrieved sources ---")
         for doc in retrieved_docs:
             print(f"- {doc.metadata.get('source', 'unknown')}")
 
-        # Generate answer
         answer = rag_chain.invoke(question)
         print("\n--- Answer ---")
         print(answer)

@@ -1,9 +1,12 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from ragas import evaluate, EvaluationDataset
-from ragas.llms import llm_factory
+from ragas.llms import LangchainLLMWrapper
 from ragas.metrics import Faithfulness, LLMContextRecall, FactualCorrectness
-from openai import OpenAI
 
 from query import retriever, rag_chain
+from llm_factory import get_chat_llm
 
 test_cases = [
     {
@@ -43,11 +46,7 @@ for case in test_cases:
 
 evaluation_dataset = EvaluationDataset.from_list(dataset)
 
-client = OpenAI(
-    api_key="ollama",  # Ollama no requiere una key real
-    base_url="http://localhost:11434/v1"
-)
-evaluator_llm = llm_factory("llama3.1:8b", provider="openai", client=client)
+evaluator_llm = LangchainLLMWrapper(get_chat_llm())
 
 result = evaluate(
     dataset=evaluation_dataset,

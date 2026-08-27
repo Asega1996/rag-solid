@@ -1,9 +1,11 @@
 # Decorator Pattern
 
 ## Definition
+
 The Decorator pattern attaches additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending behavior.
 
 ## Violating example
+
 ```typescript
 class Coffee {
   cost(): number {
@@ -23,9 +25,11 @@ class ExtraMilk extends Coffee {
   }
 }
 ```
+
 This approach leads to many subclasses for every possible combination of toppings and behaviors. It is rigid and hard to maintain.
 
 ## Compliant example
+
 ```typescript
 interface Coffee {
   cost(): number;
@@ -60,4 +64,5 @@ class VanillaDecorator extends CoffeeDecorator {
 const coffee = new VanillaDecorator(new MilkDecorator(new SimpleCoffee()));
 console.log(coffee.cost());
 ```
+
 Decorators let behavior be composed dynamically without creating a large inheritance tree.

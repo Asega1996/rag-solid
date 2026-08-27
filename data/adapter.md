@@ -1,9 +1,11 @@
 # Adapter Pattern
 
 ## Definition
+
 The Adapter pattern allows incompatible interfaces to work together by wrapping one interface in another that clients expect. It promotes interoperability without changing existing code.
 
 ## Violating example
+
 ```typescript
 class PaymentGateway {
   processPayment(amount: number): void {
@@ -23,9 +25,11 @@ class CheckoutService {
   }
 }
 ```
+
 This works only while the dependency matches the expected interface exactly. If a new payment provider exposes a different API, the `CheckoutService` must change.
 
 ## Compliant example
+
 ```typescript
 interface PaymentProvider {
   charge(amount: number): void;
@@ -59,7 +63,10 @@ class CheckoutService {
   }
 }
 
-const service = new CheckoutService(new LegacyAdapter(new LegacyPaymentGateway()));
+const service = new CheckoutService(
+  new LegacyAdapter(new LegacyPaymentGateway()),
+);
 service.pay(100);
 ```
+
 The Adapter lets existing components work with new interfaces without forcing invasive code changes.
